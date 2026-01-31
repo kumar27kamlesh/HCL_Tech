@@ -1,2 +1,3 @@
 com\hcl\ewallet\HclTechApplicationTests.class
 com\hcl\ewallet\payment\controller\PaymentControllerMockitoTest.class
+com\hcl\ewallet\payment\service\PaymentServiceImplTest.class

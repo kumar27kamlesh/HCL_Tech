@@ -1,6 +1,6 @@
 package com.hcl.ewallet.payment.service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hcl.ewallet.payment.controller.PaymentController;
 import com.hcl.ewallet.payment.entity.Customer;
 import com.hcl.ewallet.payment.entity.Product;
 import com.hcl.ewallet.payment.entity.Transaction;
+import com.hcl.ewallet.payment.enums.MerchantCodes;
 import com.hcl.ewallet.payment.enums.TransactionStatus;
 import com.hcl.ewallet.payment.exception.CustomerNotFoundException;
 import com.hcl.ewallet.payment.exception.ProductNotFoundException;
@@ -54,6 +54,7 @@ public class PaymentServiceImpl implements PaymentService {
 		try {
 			transactionRepository.save(transaction);
 		}catch(Exception ex) {
+			 log.info("Inside PaymentServiceImpl !! - Failing in transaction " +paymentRequest.toString()+ " time :: " +LocalDateTime.now());
 			ex.getStackTrace();
 		}
 		
@@ -69,10 +70,11 @@ public class PaymentServiceImpl implements PaymentService {
 	private Transaction createTransactionEntity(Customer customer, Product product) {
 		Transaction transaction = new Transaction ();
 		transaction.setAmount(customer.getAmount());
-		transaction.setCreatedAt(null);
+		transaction.setCreatedAt(LocalDateTime.now());
+		transaction.setUpdatedAt(LocalDateTime.now());
 		transaction.setCustomerId(customer.getCustomerId());
 		transaction.setCurrency(product.getCurrency());
-		transaction.setMerchantId("MARCH001");
+		transaction.setMerchantId(String.valueOf(MerchantCodes.MARCH001));
 		transaction.setTransactionRef(UUID.randomUUID().toString());
 		transaction.setWalletFee(customer.getWalletAmount());
 		transaction.setStatus(TransactionStatus.INITIATED);

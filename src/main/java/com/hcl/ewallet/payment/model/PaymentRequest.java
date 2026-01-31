@@ -1,7 +1,5 @@
 package com.hcl.ewallet.payment.model;
 
-import lombok.*;
-
 import java.math.BigDecimal;
 
 import jakarta.validation.constraints.NotBlank;

@@ -1,7 +1,5 @@
 package com.hcl.ewallet.payment.service;
 
-import org.springframework.stereotype.Service;
-
 import com.hcl.ewallet.payment.exception.CustomerNotFoundException;
 import com.hcl.ewallet.payment.exception.ProductNotFoundException;
 import com.hcl.ewallet.payment.model.PaymentRequest;
