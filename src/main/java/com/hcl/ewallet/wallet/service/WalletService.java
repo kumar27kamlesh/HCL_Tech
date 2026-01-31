@@ -25,7 +25,6 @@ public class WalletService {
     private final WalletRepository walletRepository;
     private final WalletEntryRepository walletEntryRepository;
     
-    // 1️⃣ Thread-safe counter
     private final AtomicLong transactionCounter = new AtomicLong(0);
 
     public WalletService(WalletRepository walletRepository, WalletEntryRepository walletEntryRepository) {
@@ -33,7 +32,6 @@ public class WalletService {
         this.walletEntryRepository = walletEntryRepository;
     }
 
-    // 2️⃣ Initialize counter from DB on startup
     @PostConstruct
     public void init() {
         Long maxId = walletEntryRepository.findMaxTransactionId();
@@ -46,7 +44,6 @@ public class WalletService {
         }
     }
 
-    // 3️⃣ Helper to generate next ID (e.g., "TXN1", "TXN2")
     private String generateNextTransactionId() {
         return "TXN" + transactionCounter.incrementAndGet();
     }
@@ -71,7 +68,6 @@ public class WalletService {
 
     @Transactional
     public Wallet debit(Long userId, TransactionRequest request) {
-        // 4️⃣ Generate ID automatically
         String txnId = generateNextTransactionId();
         
         Wallet wallet = getWallet(userId);
@@ -83,7 +79,6 @@ public class WalletService {
         wallet.setBalance(wallet.getBalance().subtract(request.getAmount()));
         Wallet savedWallet = walletRepository.save(wallet);
 
-        // Pass generated ID
         saveEntry(savedWallet, request.getAmount(), txnId, WalletEntry.TransactionType.DEBIT);
         
         return savedWallet;
@@ -91,26 +86,23 @@ public class WalletService {
 
     @Transactional
     public Wallet credit(Long userId, TransactionRequest request) {
-        // 4️⃣ Generate ID automatically
         String txnId = generateNextTransactionId();
 
         Wallet wallet = getWallet(userId);
         wallet.setBalance(wallet.getBalance().add(request.getAmount()));
         Wallet savedWallet = walletRepository.save(wallet);
 
-        // Pass generated ID
         saveEntry(savedWallet, request.getAmount(), txnId, WalletEntry.TransactionType.CREDIT);
         
         return savedWallet;
     }
 
-    // Updated helper method signature
     private void saveEntry(Wallet wallet, BigDecimal amount, String txnId, WalletEntry.TransactionType type) {
         WalletEntry entry = new WalletEntry();
         entry.setWallet(wallet);
         entry.setAmount(amount);
         entry.setType(type);
-        entry.setTransactionId(txnId); // Set the generated ID
+        entry.setTransactionId(txnId);
         entry.setBalanceAfter(wallet.getBalance());
         entry.setTimestamp(LocalDateTime.now());
         
