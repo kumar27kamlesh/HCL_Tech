@@ -514,5 +514,33 @@ Payment Response:
   PUT /wallet-payment
 
 ==================Ledger Service – E-Wallet System=============
+The Ledger Service maintains an immutable, append-only transaction ledger for all wallet payments.
+
+It is used for:
+    Audit & compliance
+    Financial reconciliation
+    Reporting & investigation
+
+Ledger Service Responsibilities
+    Record wallet debit entries
+    Record merchant credit entries
+    Record wallet fee entries
+    Maintain double-entry accounting
+    Provide read-only ledger APIs
+
+    Table: ledger_entries
+CREATE TABLE ledger_entries (
+    id BIGSERIAL PRIMARY KEY,
+    transaction_id UUID NOT NULL,
+    account_type VARCHAR(30) NOT NULL,
+    account_id BIGINT NOT NULL,
+    debit DECIMAL(18,2) DEFAULT 0,
+    credit DECIMAL(18,2) DEFAULT 0,
+    currency VARCHAR(3) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+Base URL: /api/ledger
+GET /api/ledger/transactions/{transactionId}
 
 ==================Messaging Service – E-Wallet System=============
