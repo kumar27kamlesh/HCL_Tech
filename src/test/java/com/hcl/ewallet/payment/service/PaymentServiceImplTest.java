@@ -50,6 +50,7 @@ class PaymentServiceImplTest {
         paymentRequest = new PaymentRequest();
         paymentRequest.setCustomerId("CUST001");
         paymentRequest.setProductId("PROD001");
+        paymentRequest.setAmount(new BigDecimal("100.00"));
 
         customer = new Customer();
         customer.setCustomerId("CUST001");

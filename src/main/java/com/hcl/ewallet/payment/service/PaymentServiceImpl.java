@@ -1,5 +1,6 @@
 package com.hcl.ewallet.payment.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,7 +51,7 @@ public class PaymentServiceImpl implements PaymentService {
 		Customer customer = checkValidateCustomer(paymentRequest.getCustomerId());
 		Product product = checkValidateProduct(paymentRequest.getProductId());
 		
-		Transaction transaction = createTransactionEntity(customer, product);	
+		Transaction transaction = createTransactionEntity(customer, product, paymentRequest);	
 		try {
 			transactionRepository.save(transaction);
 		}catch(Exception ex) {
@@ -67,9 +68,17 @@ public class PaymentServiceImpl implements PaymentService {
 
 	}
 		
-	private Transaction createTransactionEntity(Customer customer, Product product) {
+	private Transaction createTransactionEntity(Customer customer, Product product, PaymentRequest paymentRequest) {
+		BigDecimal updatedAmount =  new BigDecimal(0);
+		if(customer.getAmount().compareTo(paymentRequest.getAmount()) > 0 ) {
+			updatedAmount = customer.getAmount().subtract(paymentRequest.getAmount());
+		}else {
+			//throws Exception
+		}
+		   
+		
 		Transaction transaction = new Transaction ();
-		transaction.setAmount(customer.getAmount());
+		transaction.setAmount(updatedAmount);
 		transaction.setCreatedAt(LocalDateTime.now());
 		transaction.setUpdatedAt(LocalDateTime.now());
 		transaction.setCustomerId(customer.getCustomerId());
