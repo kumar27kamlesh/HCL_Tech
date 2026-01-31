@@ -160,8 +160,8 @@ class UserServiceImplTest {
 
         when(userRepository.findByEmail(request.getEmail()))
                 .thenReturn(Optional.of(user));
-        when(passwordEncoder.matches(request.getPassword(), user.getPassword()))
-                .thenReturn(true);
+//        when(passwordEncoder.matches(request.getPassword(), user.getPassword()))
+//                .thenReturn(true);
         when(jwtUtil.generateToken(user.getEmail(), user.getRole()))
                 .thenReturn("jwt-token");
 

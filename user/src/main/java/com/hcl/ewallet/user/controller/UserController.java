@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,12 +44,14 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Get all users")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
     }
 
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('INDIVIDUAL')")
     @Operation(summary = "Get user by ID")
     public UserResponse getUser(@PathVariable long id) {
         return userService.getUserById(id);
@@ -57,6 +60,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update user")
+    @PreAuthorize("hasRole('INDIVIDUAL')")
     public UserResponse updateUser(@PathVariable long id, @RequestBody UpdateUser user) {
         return userService.updateUser(id, user);
     }
@@ -64,6 +68,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete user by ID")
+    @PreAuthorize("hasRole('INDIVIDUAL')")
     public String deleteUser(@PathVariable long id) {
         userService.deleteUser(id);
         return "User deleted successfully";
