@@ -35,7 +35,7 @@ class HclTechApplicationTests {
     @InjectMocks
     private WalletService walletService;
 
-    @Captor // Captures arguments for detailed assertions
+    @Captor 
     private ArgumentCaptor<WalletEntry> entryCaptor;
 
     private Wallet mockWallet;
@@ -52,8 +52,6 @@ class HclTechApplicationTests {
         mockRequest = new TransactionRequest();
         mockRequest.setAmount(new BigDecimal("50.00"));
 
-        // 🟢 FIX 1: Use lenient() here.
-        // This prevents "UnnecessaryStubbingException" in tests that don't use this repo.
         lenient().when(walletEntryRepository.findMaxTransactionId()).thenReturn(99L);
         
         // Manually Initialize the service so counter starts at 99
@@ -64,7 +62,7 @@ class HclTechApplicationTests {
 
     @Test
     void createWallet_Success() {
-        Long userId = 202L;
+        Long userId = 101L;
         when(walletRepository.findByUserId(userId)).thenReturn(Optional.empty());
         when(walletRepository.save(any(Wallet.class))).thenAnswer(i -> i.getArguments()[0]);
 
@@ -103,8 +101,7 @@ class HclTechApplicationTests {
         // Assert Balance
         assertEquals(new BigDecimal("50.00"), result.getBalance());
 
-        // 🟢 FIX 2: Use ArgumentCaptor instead of argThat
-        // This captures the object passed to save() so we can inspect it closely
+
         verify(walletEntryRepository).save(entryCaptor.capture());
         
         WalletEntry savedEntry = entryCaptor.getValue();
