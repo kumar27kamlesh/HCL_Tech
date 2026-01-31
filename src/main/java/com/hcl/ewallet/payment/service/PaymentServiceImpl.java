@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hcl.ewallet.payment.entity.Customer;
+import com.hcl.ewallet.payment.entity.Merchant;
 import com.hcl.ewallet.payment.entity.Product;
 import com.hcl.ewallet.payment.entity.Transaction;
 import com.hcl.ewallet.payment.enums.MerchantCodes;
@@ -20,6 +21,7 @@ import com.hcl.ewallet.payment.exception.ProductNotFoundException;
 import com.hcl.ewallet.payment.model.PaymentRequest;
 import com.hcl.ewallet.payment.model.PaymentResponse;
 import com.hcl.ewallet.payment.repository.CustomerRepository;
+import com.hcl.ewallet.payment.repository.MerchantRepository;
 import com.hcl.ewallet.payment.repository.ProductRepository;
 import com.hcl.ewallet.payment.repository.TransactionRepository;
 
@@ -39,7 +41,8 @@ public class PaymentServiceImpl implements PaymentService {
 	@Autowired
 	private TransactionRepository transactionRepository;
 	
-	
+	@Autowired
+	private MerchantRepository merchantRepository;
 	
 	
 	@Override
@@ -50,8 +53,9 @@ public class PaymentServiceImpl implements PaymentService {
 		
 		Customer customer = checkValidateCustomer(paymentRequest.getCustomerId());
 		Product product = checkValidateProduct(paymentRequest.getProductId());
-		
-		Transaction transaction = createTransactionEntity(customer, product, paymentRequest);	
+		String transactionRef = UUID.randomUUID().toString();
+		Merchant merchant = createMerchantEntity(customer, product, paymentRequest, transactionRef);
+		Transaction transaction = createTransactionEntity(customer, product, paymentRequest, merchant.getTransactionRef());	
 		try {
 			transactionRepository.save(transaction);
 		}catch(Exception ex) {
@@ -67,15 +71,36 @@ public class PaymentServiceImpl implements PaymentService {
 
 
 	}
+	
+
+	private Merchant createMerchantEntity(Customer customer, Product product, PaymentRequest paymentRequest,String transactionRef) {
 		
-	private Transaction createTransactionEntity(Customer customer, Product product, PaymentRequest paymentRequest) {
 		BigDecimal updatedAmount =  new BigDecimal(0);
 		if(customer.getAmount().compareTo(paymentRequest.getAmount()) > 0 ) {
 			updatedAmount = customer.getAmount().subtract(paymentRequest.getAmount());
 		}else {
 			//throws Exception
 		}
-		   
+		Merchant merchant = new Merchant();
+		merchant.setMerchantId(paymentRequest.getMerchantId());
+		merchant.setMerchantName(String.valueOf(MerchantCodes.MARCH001));
+		merchant.setMerchantAmount(updatedAmount);
+		merchant.setCustomerId(customer.getCustomerId());
+		merchant.setProductId(product.getProductId());
+		merchant.setTransactionRef(transactionRef);
+		//merchant.setCreatedAt(LocalDateTime.now());
+		merchant.setUpdatedAt(LocalDateTime.now());
+		merchantRepository.save(merchant);
+		return merchant;
+	}
+
+	private Transaction createTransactionEntity(Customer customer, Product product, PaymentRequest paymentRequest, String transactionRef) {
+		BigDecimal updatedAmount =  new BigDecimal(0);
+		if(customer.getAmount().compareTo(paymentRequest.getAmount()) > 0 ) {
+			updatedAmount = customer.getAmount().subtract(paymentRequest.getAmount());
+		}else {
+			//throws Exception
+		}
 		
 		Transaction transaction = new Transaction ();
 		transaction.setAmount(updatedAmount);
@@ -84,7 +109,7 @@ public class PaymentServiceImpl implements PaymentService {
 		transaction.setCustomerId(customer.getCustomerId());
 		transaction.setCurrency(product.getCurrency());
 		transaction.setMerchantId(String.valueOf(MerchantCodes.MARCH001));
-		transaction.setTransactionRef(UUID.randomUUID().toString());
+		transaction.setTransactionRef(transactionRef);
 		transaction.setWalletFee(customer.getWalletAmount());
 		transaction.setStatus(TransactionStatus.INITIATED);
 		return transaction;

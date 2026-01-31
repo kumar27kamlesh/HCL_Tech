@@ -3,6 +3,7 @@ com\hcl\ewallet\payment\model\PaymentResponse.class
 com\hcl\ewallet\payment\repository\CustomerRepository.class
 com\hcl\ewallet\payment\entity\Transaction$TransactionBuilder.class
 com\hcl\ewallet\payment\exception\CustomerNotFoundException.class
+com\hcl\ewallet\payment\repository\MerchantRepository.class
 com\hcl\ewallet\payment\entity\Transaction.class
 com\hcl\ewallet\payment\controller\PaymentController.class
 com\hcl\ewallet\payment\model\PaymentResponse$PaymentResponseBuilder.class
@@ -11,9 +12,11 @@ com\hcl\ewallet\payment\enums\TransactionStatus.class
 com\hcl\ewallet\payment\service\PaymentService.class
 com\hcl\ewallet\payment\enums\MerchantCodes.class
 com\hcl\ewallet\payment\repository\ProductRepository.class
+com\hcl\ewallet\payment\entity\Merchant.class
 com\hcl\ewallet\payment\exception\GlobalExceptionHandler.class
 com\hcl\ewallet\payment\entity\Product.class
 com\hcl\ewallet\payment\exception\ProductNotFoundException.class
 com\hcl\ewallet\payment\repository\TransactionRepository.class
 com\hcl\ewallet\HclTechApplication.class
+com\hcl\ewallet\payment\entity\Merchant$MerchantBuilder.class
 com\hcl\ewallet\payment\service\PaymentServiceImpl.class
