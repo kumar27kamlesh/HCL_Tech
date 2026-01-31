@@ -1,4 +1,5 @@
-# HCL_Tech
+# HCL\_Tech
+
 Hackathon
 # 💳 E-Wallet Payment System – Microservices (Spring Boot)
 
@@ -143,6 +144,7 @@ It consumes wallet debit events from Wallet Service, credits merchant wallets lo
 The service primarily operates in an event-driven manner using Kafka with minimal REST APIs.
 🎯 Responsibilities
 
+<<<<<<< Updated upstream
     Maintain merchant profile and wallet balance
     Consume wallet-debited events from Wallet Service
     Credit merchant wallet after customer wallet debit
@@ -151,6 +153,9 @@ The service primarily operates in an event-driven manner using Kafka with minima
     Publish success/failure events
     Handle rollback (compensation)
     Provide merchant wallet query APIs
+=======
+&nbsp;   id BIGINT NOT NULL AUTO\_INCREMENT,
+>>>>>>> Stashed changes
 
 🏗️ Role in Architecture
 
