@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         User user=new User();
         BeanUtils.copyProperties(registerUser,user);
         user.setUserStatus(UserStatus.ACTIVE);
-       // user.setRole(registerUser.getRole());
+        user.setRole(registerUser.getRole());
         user.setUserType(registerUser.getUserType());
         User savedUser=userRepository.save(user);
 

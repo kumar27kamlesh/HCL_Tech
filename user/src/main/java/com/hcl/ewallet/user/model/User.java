@@ -24,10 +24,18 @@ public class User {
     private String password;
     private String country;
     private String currency;
-    private UserStatus userStatus;
     private int age;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "user_role", nullable = false)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_status", nullable = false)
+    private UserStatus userStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type", nullable = false)
     private UserType userType;
 }
 
